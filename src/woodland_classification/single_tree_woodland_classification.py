@@ -332,42 +332,6 @@ fig1.show()
 fig1.tight_layout()
 fig1.savefig('%sConfusionMatrix_RF_%s_s1_s2_summer.png' % (path2figures,site))
 
-# plot land cover maps
-# two panels: a) LiDAR; b) RF
-colours = np.asarray(['#ffcfe2', '#ff9dc8', '#00cba7', '#00735c', '#003d30'])
-lc_cmap = ListedColormap(sns.color_palette(colours).as_hex())
-
-plt.rcParams["axes.axisbelow"] = False
-fig2,axes = plt.subplots(nrows=2,ncols=1,sharex=True,sharey=True,figsize=(9,8))
-fig2.subplots_adjust(right=0.75)
-lc.plot(ax=axes[0],cmap = lc_cmap, add_colorbar=False)
-#lc_svm.plot(ax=axes[1],cmap = lc_cmap)
-lc_rf.plot(ax=axes[1],cmap = lc_cmap, add_colorbar=False)
-
-#for ii, title in enumerate(['Reference (LiDAR)','Support Vector Machine', 'Random Forest']):
-for ii, title in enumerate(['Reference (LiDAR)', 'Random Forest']):
-    axes[ii].set_title(title)
-    axes[ii].set_xlabel('Easting / m')
-    axes[ii].set_ylabel('Northing / m')
-    axes[ii].set_aspect('equal')
-
-for ax in axes:
-    ax.grid(True,which='both')
-
-# plot legend for color map
-cax = fig2.add_axes([0.8,0.375,0.05,0.25])
-bounds = np.arange(len(lc_labels)+1)
-norm = mpl.colors.BoundaryNorm(bounds, lc_cmap.N)
-cb = mpl.colorbar.ColorbarBase(cax,cmap=lc_cmap,norm=norm,orientation='vertical')
-n_class = len(lc_labels)
-loc = np.arange(0,n_class)+0.5
-cb.set_ticks(loc)
-cb.set_ticklabels(lc_labels)
-cb.update_ticks()
-
-fig2.show()
-fig2.savefig('%slandcover_classifications_%s_s1_s2_summer.png' % (path2figures,site))
-
 """
 Version two of the accuracy assessment with the more nuanced treatment of
 errors described by Brandt and Stolle (in review)
@@ -444,53 +408,6 @@ print('CErate',CErate*100)
 print('PA    ',(1-OErate)*100)
 print('UA    ',(1-CErate)*100)
 print('OA    ',(acc_stats_rf_tol0['OA'])*100)
-
-
-"""
-Plot up the error map
-"""
-error_colours = np.asarray(['white', 'black', '#cecece', '#ff9DC8', '#656565', '#00cba7'])[::-1]
-error_labels = np.asarray(['no trees', 'trees',
-                            'adjacent omission error', 'omission error',
-                            'adjacent commission error', 'commission error'])[::-1]
-error_cmap = ListedColormap(sns.color_palette(error_colours).as_hex())
-
-error_map = lc.copy(deep=True)
-error_map.values*=np.nan
-
-error_map.values[(acc_stats_rf_binary_tol0['omission_error_map']==0)*(lc_binary.values==1)] = 6      # no tree
-error_map.values[(acc_stats_rf_binary_tol0['omission_error_map']==0)*(lc_binary.values==2)] = 5      # tree
-error_map.values[(acc_stats_rf_binary_tol0['omission_error_map']==1)*
-                 (acc_stats_rf_binary_tol1['commission_error_map']==0)*(lc_binary.values==2)] = 4    # adjacent omission error
-error_map.values[(acc_stats_rf_binary_tol0['commission_error_map']==1)*
-                 (acc_stats_rf_binary_tol1['commission_error_map']==0)*(lc_rf_binary.values==2)] = 2 # adjacent commision error
-error_map.values[(acc_stats_rf_binary_tol1['omission_error_map']==1)*(lc_binary.values==2)] = 3   #  omission error
-error_map.values[(acc_stats_rf_binary_tol1['commission_error_map']==1)*(lc_rf_binary.values==2)] = 1 # commission error
-
-plt.rcParams["axes.axisbelow"] = False
-fig3,ax = plt.subplots(nrows=1,ncols=1,sharex=True,sharey=True,figsize=(9,4))
-fig3.subplots_adjust(right=0.75)
-error_map.plot(ax=ax,cmap = error_cmap, add_colorbar=False)
-
-#for ii, title in enumerate(['Reference (LiDAR)','Support Vector Machine', 'Random Forest']):
-ax.set_xlabel('Easting / m')
-ax.set_ylabel('Northing / m')
-ax.set_aspect('equal')
-ax.grid(True,which='both')
-
-# plot legend for color map
-cax = fig3.add_axes([0.8,0.25,0.05,0.5])
-bounds = np.arange(len(error_labels)+1)
-norm = mpl.colors.BoundaryNorm(bounds, error_cmap.N)
-cb = mpl.colorbar.ColorbarBase(cax,cmap=error_cmap,norm=norm,orientation='vertical')
-n_class = len(error_labels)
-loc = np.arange(0,n_class)+0.5
-cb.set_ticks(loc)
-cb.set_ticklabels(error_labels)
-cb.update_ticks()
-
-fig3.show()
-fig3.savefig('%serror_map_%s_s1_s2_summer.png' % (path2figures,site))
 
 """
 save layers to file
