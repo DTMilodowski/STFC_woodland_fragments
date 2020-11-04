@@ -4,11 +4,7 @@ woodland_classification_figures.py
 Script to generate figures for paper on woodland mapping in NW Scotland
 --------------------------------------------------------------------------------
 """
-import os
-import sys
-
 import numpy as np
-import pandas as pd
 import xarray as xr
 
 import seaborn as sns
@@ -18,15 +14,7 @@ import matplotlib.pyplot as plt
 
 from matplotlib.colors import ListedColormap
 
-from skimage import morphology
-from sklearn.svm import SVC
-from sklearn.ensemble import RandomForestClassifier
 sns.set()
-
-sys.path.append('../data_io')
-sys.path.append('../accuracy_assessment/')
-import data_io as io
-import accuracy_assessment as acc
 
 """
 Defining some general variables and other project details
@@ -36,7 +24,8 @@ site = 'Arisaig'
 
 # paths
 path2lidar = '/disk/scratch/local.2/dmilodow/SEOS/raster/OSGBgrid/'
-path2output = '/exports/csce/datastore/geos/users/dmilodow/STFC/woodland_fragments/figures/'
+path2output = '/exports/csce/datastore/geos/users/dmilodow/STFC/woodland_fragments/output/'
+path2figures = '/exports/csce/datastore/geos/users/dmilodow/STFC/woodland_fragments/figures/'
 
 # lidar files
 if site == 'Auchteraw':
@@ -126,7 +115,7 @@ cb.set_ticklabels(lc_labels)
 cb.update_ticks()
 
 fig2.show()
-fig2.savefig('landcover_classifications_comparison_%s.png' % site)
+fig2.savefig('%slandcover_classifications_comparison_%s.png' % (path2figures,site))
 
 
 """
@@ -157,7 +146,6 @@ lc_rf_s1__.sel(x=slice(W,E),y=slice(N,S)).plot(ax=axes[1,1],cmap = lc_cmap, add_
 emap_s1s2.sel(x=slice(W,E),y=slice(N,S)).plot(ax=axes[2,0],cmap = error_cmap, add_colorbar=False)
 emap_s1__.sel(x=slice(W,E),y=slice(N,S)).plot(ax=axes[2,1],cmap = error_cmap, add_colorbar=False)
 
-#for ii, title in enumerate(['Reference (LiDAR)','Support Vector Machine', 'Random Forest']):
 for ii, title in enumerate(['LiDAR TCH', 'Reference Classification (LiDAR)',
                             'Classification (S1 & S2)','Classification (S1 only)',
                             'Error map (S1 & S2)','Error map (S1 only)']):
@@ -199,7 +187,7 @@ cb3.set_ticklabels(error_labels)
 cb3.update_ticks()
 
 fig3.show()
-fig3.savefig('classification_comparison_detail_%s.png' % site)
+fig3.savefig('%sclassification_comparison_detail_%s.png' % (path2figures,site))
 
 
 """
@@ -234,4 +222,4 @@ cb.set_ticklabels(error_labels)
 cb.update_ticks()
 
 fig4.show()
-fig4.savefig('error_map_classifications_%s.png' % site)
+fig4.savefig('%serror_map_classifications_%s.png' % (path2figures,site))
