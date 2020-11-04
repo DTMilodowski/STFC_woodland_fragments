@@ -77,23 +77,8 @@ site = 'Arisaig' # Site name, I have other sites set up with systematic filename
 #         to ensure that the paths are defined in one location!
 path2s1 = '/disk/scratch/local.2/dmilodow/Sentinel1/processed_temporal/2019/' # path to the processed sentinel 1 data
 path2s2 = '/exports/csce/datastore/geos/users/dmilodow/STFC/DATA/Sentinel2/processed_bands_and_derivatives/' # path to the processed sentinel 2 data
-path2lidar = '/disk/scratch/local.2/dmilodow/SEOS/raster/OSGBgrid/' # path to the lidar data
 path2figures = '/exports/csce/datastore/geos/users/dmilodow/STFC/woodland_fragments/figures/' # output path for figures
 path2output = '/exports/csce/datastore/geos/users/dmilodow/STFC/woodland_fragments/output/' # output path for rasters
-
-# lidar files
-#
-# note that there are some discrepancies in the file names for candidate sites,
-# hence the checks below
-if site == 'Auchteraw':
-    dtm_file = '%s/%se__Digital_Terrain_Model_1m_OSGB.tif' % (path2lidar,site)
-    dsm_file = '%s/%se__Digital_Surface_Model_1m_OSGB.tif' % (path2lidar,site)
-elif site == 'Arisaig':
-    dtm_file = '%s/%s_South__Digital_Terrain_Model_1m_OSGB.tif' % (path2lidar,site)
-    dsm_file = '%s/%s_South__Digital_Surface_Model_1m_OSGB.tif' % (path2lidar,site)
-else:
-    dtm_file = '%s/%s__Digital_Terrain_Model_1m_OSGB.tif' % (path2lidar,site)
-    dsm_file = '%s/%s__Digital_Surface_Model_1m_OSGB.tif' % (path2lidar,site)
 
 # S1 files (temporal average and standard deviations)
 s1vh_A_file = '%s%s/S1A__IW__A_2019_VH_tnr_bnr_Orb_Cal_TF_TC_dB_temporal_mean_summer.tif' % (path2s1,site)
@@ -345,7 +330,7 @@ axes[0].set_title('Confusion Matrix\nFull Classification')
 axes[1].set_title('Confusion Matrix\nBinary Classification')
 fig1.show()
 fig1.tight_layout()
-fig1.savefig('ConfusionMatrix_RF_%s_s1_s2_summer.png' % site)
+fig1.savefig('%sConfusionMatrix_RF_%s_s1_s2_summer.png' % (path2figures,site))
 
 # plot land cover maps
 # two panels: a) LiDAR; b) RF
@@ -381,7 +366,7 @@ cb.set_ticklabels(lc_labels)
 cb.update_ticks()
 
 fig2.show()
-fig2.savefig('landcover_classifications_%s_s1_s2_summer.png' % site)
+fig2.savefig('%slandcover_classifications_%s_s1_s2_summer.png' % (path2figures,site))
 
 """
 Version two of the accuracy assessment with the more nuanced treatment of
@@ -505,7 +490,7 @@ cb.set_ticklabels(error_labels)
 cb.update_ticks()
 
 fig3.show()
-fig3.savefig('error_map_%s_s1_s2_summer.png' % site)
+fig3.savefig('%serror_map_%s_s1_s2_summer.png' % (path2figures,site))
 
 """
 save layers to file
